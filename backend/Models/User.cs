@@ -60,14 +60,17 @@ namespace MovieRecommendationAPI.Models
         [Column("zip")]
         public int? Zip { get; set; }
 
-        // Authentication fields (not in the database)
+        // Authentication fields
         [NotMapped]
         public string? Password { get; set; }
 
-        [NotMapped]
+        [Column("password_hash")]
         public string? PasswordHash { get; set; }
 
         [NotMapped]
+        public string? PasswordSalt { get; set; }
+
+        [Column("role")]
         public string? Role { get; set; } = "User";
 
         // Navigation properties

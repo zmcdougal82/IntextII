@@ -134,6 +134,9 @@ namespace MovieRecommendationAPI.Models
         [Column("Thrillers")]
         public int? Thrillers { get; set; }
 
+        [Column("poster_url")]
+        public string? PosterUrl { get; set; }
+        
         // Navigation properties
         public ICollection<Rating>? Ratings { get; set; }
     }

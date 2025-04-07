@@ -20,6 +20,10 @@ namespace MovieRecommendationAPI.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+                
+            // Ignore navigation properties to avoid issues with Rating entity
+            modelBuilder.Entity<User>()
+                .Ignore(u => u.Ratings);
         }
     }
 }

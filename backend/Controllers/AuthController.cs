@@ -32,7 +32,7 @@ namespace MovieRecommendationAPI.Controllers
                 return BadRequest("User with this email already exists.");
             }
 
-            CreatePasswordHash(registerDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            string passwordHash = CreatePasswordHash(registerDto.Password);
 
             var user = new User
             {
@@ -52,7 +52,7 @@ namespace MovieRecommendationAPI.Controllers
                 Hulu = registerDto.Hulu ? 1 : 0,
                 AppleTVPlus = registerDto.AppleTVPlus ? 1 : 0,
                 Peacock = registerDto.Peacock ? 1 : 0,
-                PasswordHash = Convert.ToBase64String(passwordHash),
+                PasswordHash = passwordHash,
                 Role = "User"
             };
 
@@ -80,7 +80,7 @@ namespace MovieRecommendationAPI.Controllers
                 return BadRequest("User not found.");
             }
 
-            if (!VerifyPasswordHash(loginDto.Password, Convert.FromBase64String(user.PasswordHash ?? string.Empty)))
+            if (!VerifyPasswordHash(loginDto.Password, user.PasswordHash ?? string.Empty))
             {
                 return BadRequest("Wrong password.");
             }
@@ -127,21 +127,45 @@ namespace MovieRecommendationAPI.Controllers
             return tokenHandler.WriteToken(token);
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        private string CreatePasswordHash(string password)
         {
             using (var hmac = new HMACSHA512())
             {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                var passwordSalt = hmac.Key;
+                var passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                
+                // Combine salt and hash into a single string
+                // Format: {salt}:{hash}
+                return $"{Convert.ToBase64String(passwordSalt)}:{Convert.ToBase64String(passwordHash)}";
             }
         }
 
-        private bool VerifyPasswordHash(string password, byte[] passwordHash)
+        private bool VerifyPasswordHash(string password, string storedHashString)
         {
-            using (var hmac = new HMACSHA512())
+            // Extract salt and hash from the combined string
+            var parts = storedHashString.Split(':');
+            if (parts.Length != 2)
+                return false;
+                
+            var salt = Convert.FromBase64String(parts[0]);
+            var hash = Convert.FromBase64String(parts[1]);
+            
+            // Use the stored salt to compute the hash
+            using (var hmac = new HMACSHA512(salt))
             {
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
+                
+                // Compare the computed hash with the stored hash
+                if (computedHash.Length != hash.Length)
+                    return false;
+                
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != hash[i])
+                        return false;
+                }
+                
+                return true;
             }
         }
     }

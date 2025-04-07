@@ -18,6 +18,11 @@ namespace MovieRecommendationAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Configure unique email constraint for User
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
             // Configure composite key for Rating
             modelBuilder.Entity<Rating>()
                 .HasKey(r => new { r.UserId, r.MovieId });
