@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 
 // Configure SQLite
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
-    $"Data Source={Path.Combine(builder.Environment.ContentRootPath, "..", "Movies.db")}";
+    $"Data Source={Path.Combine(builder.Environment.ContentRootPath, "..", "NewMovies.db")}";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
 

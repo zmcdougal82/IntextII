@@ -15,10 +15,12 @@ namespace MovieRecommendationAPI.Models
         [Column("rating")]
         public int Value { get; set; }
 
-        // Navigation properties
-        [ForeignKey("UserId")]
-        public User? User { get; set; }
+        [Column("timestamp")]
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
+        // Navigation properties
+        public User? User { get; set; }
+        
         [ForeignKey("MovieId")]
         public Movie? Movie { get; set; }
     }

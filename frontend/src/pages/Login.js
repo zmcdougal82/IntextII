@@ -66,10 +66,13 @@ const Login = () => {
       await login(formData);
       navigate(from, { replace: true });
     } catch (err) {
-      setApiError(
-        err.response?.data || 
-        'Login failed. Please check your credentials and try again.'
-      );
+      // Handle the error response properly
+      const errorMessage = 
+        typeof err.response?.data === 'string' 
+          ? err.response.data 
+          : err.response?.data?.title || err.response?.data?.message || 'Login failed. Please check your credentials and try again.';
+      
+      setApiError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

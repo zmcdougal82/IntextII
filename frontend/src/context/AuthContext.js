@@ -31,7 +31,12 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
       return user;
     } catch (err) {
-      setError(err.response?.data || 'Registration failed');
+      const errorMessage = 
+        typeof err.response?.data === 'string' 
+          ? err.response.data 
+          : err.response?.data?.title || err.response?.data?.message || 'Registration failed';
+      
+      setError(errorMessage);
       throw err;
     } finally {
       setLoading(false);
@@ -46,7 +51,12 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
       return user;
     } catch (err) {
-      setError(err.response?.data || 'Login failed');
+      const errorMessage = 
+        typeof err.response?.data === 'string' 
+          ? err.response.data 
+          : err.response?.data?.title || err.response?.data?.message || 'Login failed';
+      
+      setError(errorMessage);
       throw err;
     } finally {
       setLoading(false);

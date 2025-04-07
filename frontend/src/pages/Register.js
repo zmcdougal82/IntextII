@@ -101,10 +101,13 @@ const Register = () => {
       await register(registerData);
       navigate('/');
     } catch (err) {
-      setApiError(
-        err.response?.data || 
-        'Registration failed. Please try again later.'
-      );
+      // Handle the error response properly
+      const errorMessage = 
+        typeof err.response?.data === 'string' 
+          ? err.response.data 
+          : err.response?.data?.title || err.response?.data?.message || 'Registration failed. Please try again later.';
+      
+      setApiError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
