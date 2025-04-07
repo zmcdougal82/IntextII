@@ -1,0 +1,29 @@
+{
+  "name": "movie-recommendation-app",
+  "version": "1.0.0",
+  "description": "Full-stack movie recommendation web application",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && dotnet run",
+    "frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "install-all": "cd frontend && npm install && cd .. && npm install"
+  },
+  "keywords": [
+    "movies",
+    "recommendations",
+    "dotnet",
+    "react"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "bootstrap": "^5.3.5",
+    "concurrently": "^8.2.2",
+    "react-bootstrap": "^2.10.9",
+    "react-router-dom": "^6.22.3"
+  }
+}

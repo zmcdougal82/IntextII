@@ -1,0 +1,128 @@
+/* General Styles */
+body {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Movie Card Styles */
+.movie-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.movie-card .card-img-top {
+  height: 300px;
+  object-fit: cover;
+}
+
+/* Star Rating Styles */
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+}
+
+.star {
+  transition: transform 0.2s ease;
+}
+
+.star:not(.disabled):hover {
+  transform: scale(1.2);
+}
+
+/* Hero Section Styles */
+.hero-section {
+  background: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+  padding: 80px 0;
+  margin-bottom: 40px;
+}
+
+.hero-section h1 {
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Movie Detail Page */
+.movie-poster {
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Admin Page Styles */
+.genre-badge {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.genre-badge:hover {
+  opacity: 0.8;
+}
+
+/* Pagination Styles */
+.pagination {
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Form Styles */
+.form-control:focus, .form-select:focus {
+  border-color: #4ca1af;
+  box-shadow: 0 0 0 0.25rem rgba(76, 161, 175, 0.25);
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: #4ca1af;
+  border-color: #4ca1af;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #3a8a98;
+  border-color: #3a8a98;
+}
+
+.btn-outline-primary {
+  color: #4ca1af;
+  border-color: #4ca1af;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+  background-color: #4ca1af;
+  border-color: #4ca1af;
+}
+
+/* Footer Styles */
+footer {
+  background-color: #2c3e50 !important;
+  color: white;
+  padding: 20px 0;
+}
+
+footer a {
+  color: white;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 40px 0;
+  }
+  
+  .movie-card .card-img-top {
+    height: 250px;
+  }
+}
