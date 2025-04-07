@@ -110,12 +110,17 @@ namespace MovieRecommendationAPI.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("JwtSettings:Secret").Value ?? "defaultsecretkey12345678901234567890"));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+            // Use UTC time to avoid time zone issues
+            var now = DateTime.UtcNow;
+            var expiryMinutes = Convert.ToDouble(_configuration.GetSection("JwtSettings:ExpiryMinutes").Value ?? "60");
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration.GetSection("JwtSettings:ExpiryMinutes").Value ?? "60")),
+                NotBefore = now,
+                Expires = now.AddMinutes(expiryMinutes),
                 SigningCredentials = creds,
                 Issuer = _configuration.GetSection("JwtSettings:Issuer").Value,
                 Audience = _configuration.GetSection("JwtSettings:Audience").Value

@@ -30,7 +30,6 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiError, setApiError] = useState('');
-  const [showStreamingServices, setShowStreamingServices] = useState(false);
   
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -74,11 +73,31 @@ const Register = () => {
       newErrors.confirmPassword = 'Passwords do not match';
     }
     
-    if (formData.age && (isNaN(formData.age) || formData.age < 1)) {
+    if (!formData.phone) {
+      newErrors.phone = 'Phone number is required';
+    }
+    
+    if (!formData.age) {
+      newErrors.age = 'Age is required';
+    } else if (isNaN(formData.age) || formData.age < 1) {
       newErrors.age = 'Please enter a valid age';
     }
     
-    if (formData.zip && (isNaN(formData.zip) || formData.zip.length < 5)) {
+    if (!formData.gender) {
+      newErrors.gender = 'Gender is required';
+    }
+    
+    if (!formData.city) {
+      newErrors.city = 'City is required';
+    }
+    
+    if (!formData.state) {
+      newErrors.state = 'State is required';
+    }
+    
+    if (!formData.zip) {
+      newErrors.zip = 'ZIP code is required';
+    } else if (isNaN(formData.zip) || formData.zip.length < 5) {
       newErrors.zip = 'Please enter a valid ZIP code';
     }
     
@@ -98,9 +117,15 @@ const Register = () => {
       // Remove confirmPassword as it's not needed for the API
       const { confirmPassword, ...registerData } = formData;
       
+      // Debug: Log the data being sent to the API
+      console.log('Registration data being sent:', registerData);
+      
       await register(registerData);
       navigate('/');
     } catch (err) {
+      // Debug: Log the error
+      console.error('Registration error:', err);
+      
       // Handle the error response properly
       const errorMessage = 
         typeof err.response?.data === 'string' 
@@ -204,7 +229,7 @@ const Register = () => {
                   
                   <Col md={6}>
                     <Form.Group className="mb-3" controlId="phone">
-                      <Form.Label>Phone Number</Form.Label>
+                      <Form.Label>Phone Number <span className="text-danger">*</span></Form.Label>
                       <Form.Control
                         type="tel"
                         name="phone"
@@ -212,6 +237,7 @@ const Register = () => {
                         value={formData.phone}
                         onChange={handleChange}
                         isInvalid={!!errors.phone}
+                        required
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.phone}
@@ -223,7 +249,7 @@ const Register = () => {
                     <Row>
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="age">
-                          <Form.Label>Age</Form.Label>
+                          <Form.Label>Age <span className="text-danger">*</span></Form.Label>
                           <Form.Control
                             type="number"
                             name="age"
@@ -231,6 +257,7 @@ const Register = () => {
                             value={formData.age}
                             onChange={handleChange}
                             isInvalid={!!errors.age}
+                            required
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.age}
@@ -240,11 +267,13 @@ const Register = () => {
                       
                       <Col md={6}>
                         <Form.Group className="mb-3" controlId="gender">
-                          <Form.Label>Gender</Form.Label>
+                          <Form.Label>Gender <span className="text-danger">*</span></Form.Label>
                           <Form.Select
                             name="gender"
                             value={formData.gender}
                             onChange={handleChange}
+                            isInvalid={!!errors.gender}
+                            required
                           >
                             <option value="">Select gender</option>
                             <option value="Male">Male</option>
@@ -252,76 +281,76 @@ const Register = () => {
                             <option value="Other">Other</option>
                             <option value="Prefer not to say">Prefer not to say</option>
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid">
+                            {errors.gender}
+                          </Form.Control.Feedback>
                         </Form.Group>
                       </Col>
                     </Row>
                   </Col>
                 </Row>
                 
-                {/* Optional Information */}
-                <div className="mb-3">
-                  <Button
-                    variant="outline-secondary"
-                    className="w-100"
-                    onClick={() => setShowStreamingServices(!showStreamingServices)}
-                    type="button"
-                  >
-                    {showStreamingServices ? 'Hide' : 'Show'} Additional Information
-                  </Button>
-                </div>
+                <h5 className="mt-4 mb-3">Location Information</h5>
+                <Row>
+                  <Col md={4}>
+                    <Form.Group className="mb-3" controlId="city">
+                      <Form.Label>City <span className="text-danger">*</span></Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="city"
+                        placeholder="Your city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        isInvalid={!!errors.city}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.city}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  
+                  <Col md={4}>
+                    <Form.Group className="mb-3" controlId="state">
+                      <Form.Label>State <span className="text-danger">*</span></Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="state"
+                        placeholder="Your state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        isInvalid={!!errors.state}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.state}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                  
+                  <Col md={4}>
+                    <Form.Group className="mb-3" controlId="zip">
+                      <Form.Label>ZIP Code <span className="text-danger">*</span></Form.Label>
+                      <Form.Control
+                        type="text"
+                        name="zip"
+                        placeholder="Your ZIP code"
+                        value={formData.zip}
+                        onChange={handleChange}
+                        isInvalid={!!errors.zip}
+                        required
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.zip}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Col>
+                </Row>
                 
-                {showStreamingServices && (
-                  <>
-                    <h5 className="mt-4 mb-3">Location Information</h5>
-                    <Row>
-                      <Col md={4}>
-                        <Form.Group className="mb-3" controlId="city">
-                          <Form.Label>City</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="city"
-                            placeholder="Your city"
-                            value={formData.city}
-                            onChange={handleChange}
-                          />
-                        </Form.Group>
-                      </Col>
-                      
-                      <Col md={4}>
-                        <Form.Group className="mb-3" controlId="state">
-                          <Form.Label>State</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="state"
-                            placeholder="Your state"
-                            value={formData.state}
-                            onChange={handleChange}
-                          />
-                        </Form.Group>
-                      </Col>
-                      
-                      <Col md={4}>
-                        <Form.Group className="mb-3" controlId="zip">
-                          <Form.Label>ZIP Code</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="zip"
-                            placeholder="Your ZIP code"
-                            value={formData.zip}
-                            onChange={handleChange}
-                            isInvalid={!!errors.zip}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.zip}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    
-                    <h5 className="mt-4 mb-3">Streaming Services</h5>
-                    <p className="text-muted mb-3">Select the streaming services you currently subscribe to:</p>
-                    
-                    <Row>
+                <h5 className="mt-4 mb-3">Streaming Services</h5>
+                <p className="text-muted mb-3">Select the streaming services you currently subscribe to:</p>
+                
+                <Row>
                       <Col md={3}>
                         <Form.Group className="mb-3" controlId="netflix">
                           <Form.Check
@@ -417,9 +446,7 @@ const Register = () => {
                           />
                         </Form.Group>
                       </Col>
-                    </Row>
-                  </>
-                )}
+                </Row>
                 
                 <Button 
                   variant="primary" 
