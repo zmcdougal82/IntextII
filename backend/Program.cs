@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5099", "https://movie-recommendation-frontend.azurestaticapps.net")
+        policy.WithOrigins("https://cineniche-0310-backend-hwdydxa2h3hkdnaj.eastus-01.azurewebsites.net")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
