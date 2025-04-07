@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5099/api';
+const API_URL = 'https://movie-recommendation-api.azurewebsites.net/api';
 
 // Create axios instance
 const api = axios.create({
