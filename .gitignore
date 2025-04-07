@@ -46,7 +46,8 @@ msbuild.err
 msbuild.wrn
 
 # SQLite database files
-*.db
+# Uncommented to include Movies.db in the repository
+# *.db
 *.db-shm
 *.db-wal
 
