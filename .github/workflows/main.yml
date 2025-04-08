@@ -1,0 +1,88 @@
+name: Movie Recommendation App CI/CD
+
+on:
+  push:
+    branches:
+      - azure_test_drive
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend_changed: ${{ steps.filter.outputs.backend }}
+      frontend_changed: ${{ steps.filter.outputs.frontend }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Check for file changes
+      uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          backend:
+            - 'backend/**'
+          frontend:
+            - 'frontend/**'
+
+  build-and-deploy-backend:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.backend_changed == 'true' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: cd backend && dotnet restore
+      
+    - name: Build
+      run: cd backend && dotnet build --configuration Release --no-restore
+      
+    - name: Publish
+      run: cd backend && dotnet publish --configuration Release --no-build --output ./publish
+      
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'movie-recomm-api-2024'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: './backend/publish'
+
+  build-and-deploy-frontend:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.frontend_changed == 'true' }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: cd frontend && npm ci
+      
+    - name: Build
+      run: cd frontend && npm run build
+      
+    - name: Deploy to Azure Static Web App
+      uses: Azure/static-web-apps-deploy@v1
+      with:
+        azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_TOKEN }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        action: "upload"
+        app_location: "frontend"
+        output_location: "build"
+        skip_app_build: true # We already built it in the previous step

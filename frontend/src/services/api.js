@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://cineniche-0310-backend-hwdydxa2h3hkdnaj.eastus-01.azurewebsites.net/';
+const API_URL = 'https://movie-recomm-api-2024.azurewebsites.net/api/';
 
 // Create axios instance
 const api = axios.create({

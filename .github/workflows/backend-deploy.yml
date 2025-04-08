@@ -1,0 +1,38 @@
+name: Deploy Backend to Azure App Service
+
+on:
+  push:
+    branches:
+      - azure_test_drive
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-deploy.yml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: cd backend && dotnet restore
+      
+    - name: Build
+      run: cd backend && dotnet build --configuration Release --no-restore
+      
+    - name: Publish
+      run: cd backend && dotnet publish --configuration Release --no-build --output ./publish
+      
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'movie-recomm-api-2024'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: './backend/publish'

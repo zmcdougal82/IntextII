@@ -9,11 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configure SQLite
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
-    $"Data Source={Path.Combine(builder.Environment.ContentRootPath, "NewMovies.db")}";
+// Configure SQL Server
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseSqlServer(connectionString));
 
 // Configure CORS
 builder.Services.AddCors(options =>
